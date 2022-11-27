@@ -7,18 +7,18 @@ import urllib3
 from base64 import b64encode
 
 try:
-    from listmonk_api.decorators import require_auth
+    from confluence_calendar_api.decorators import require_auth
 except ModuleNotFoundError:
     from decorators import require_auth
 try:
-    from listmonk_api.exceptions import (AuthError, UnauthorizedError, ParameterError, MissingParameterError)
+    from confluence_calendar_api.exceptions import (AuthError, UnauthorizedError, ParameterError, MissingParameterError)
 except ModuleNotFoundError:
     from exceptions import (AuthError, UnauthorizedError, ParameterError, MissingParameterError)
 
 
 class Api(object):
 
-    def __init__(self, url=None, username=None, password=None, token=None, verify=True):
+    def __init__(self, url=None, username=None, password=None, token=None, verify=True, proxies=None):
         if url is None:
             raise MissingParameterError
 
@@ -26,6 +26,7 @@ class Api(object):
         self.url = url
         self.headers = None
         self.verify = verify
+        self.proxies = proxies
 
         if self.verify is False:
             urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
@@ -45,7 +46,8 @@ class Api(object):
         else:
             raise MissingParameterError
 
-        response = self._session.get(f'{self.url}/subscribers', headers=self.headers, verify=self.verify)
+        response = self._session.get(f'{self.url}/subscribers', headers=self.headers, verify=self.verify,
+                                     proxies=self.proxies)
 
         if response.status_code == 403:
             raise UnauthorizedError
@@ -55,16 +57,30 @@ class Api(object):
             raise ParameterError
             
     @require_auth
-    def get_calendars(self, sub_calendar_id=None):
+    def get_calendars(self, sub_calendar_id=None, time_zone_id='US%2FPacific', start='2022-01-01T00%3A00%3A00Z',
+                      end='2025-06-22T00%3A00%3A00Z'):
         if sub_calendar_id is None:
             raise MissingParameterError
-        r = self._session.get(self.api_url + f"/calendar-services/1.0/calendar/events.json?subCalendarId={sub_calendar_id}&userTimeZoneId=US%2FPacific&start=2022-01-01T00%3A00%3A00Z&end=2025-06-22T00%3A00%3A00Z", headers=self.headers, verify=self.verify)
-        return r.json()
+        response = self._session.get(f'{self.url}/calendar-services/1.0/calendar/events.json?subCalendarId={sub_calendar_id}'
+                              f'&userTimeZoneId={time_zone_id}'
+                              f'&start={start}'
+                              f'&end={end}', headers=self.headers, verify=self.verify, proxies=self.proxies)
+        try:
+            return response.json()
+        except ValueError or AttributeError:
+            return response
       
     @require_auth
     def add_calendar_event(self, data=None):
         if data is None:
             raise MissingParameterError
-        r = self._session.put(self.api_url + f"/calendar-services/1.0/calendar/events.json", headers=self.headers, data=data,
-                              verify=self.verify)
-        return r.json()
+        try:
+            data = json.dumps(data, indent=4)
+        except AttributeError or ValueError:
+            raise ParameterError
+        response = self._session.put(f'{self.url}/calendar-services/1.0/calendar/events.json', headers=self.headers,
+                                     data=data, verify=self.verify, proxies=self.proxies)
+        try:
+            return response.json()
+        except ValueError or AttributeError:
+            return response
