@@ -3,7 +3,7 @@
 
 import functools
 try:
-    from gitlab_api.exceptions import LoginRequiredError
+    from confluence_calendar_api.exceptions import LoginRequiredError
 except ModuleNotFoundError:
     from exceptions import LoginRequiredError
 

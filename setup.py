@@ -2,7 +2,7 @@
 # coding: utf-8
 
 from setuptools import setup
-from gitlab_api.version import __version__, __author__, __credits__
+from confluence_calendar_api.version import __version__, __author__, __credits__
 from pathlib import Path
 import re
 
@@ -15,20 +15,20 @@ with open("README.md", "w") as readme_file:
 description = 'Confluence Calendar API Python Wrapper'
 
 setup(
-    name='gitlab-api',
+    name='confluence-calendar-api',
     version=f"{version}",
     description=description,
     long_description=f'{readme}',
     long_description_content_type='text/markdown',
-    url='https://github.com/Knucklessg1/gitlab-api',
+    url='https://github.com/Knuckles-Team/confluence-calendar-api',
     author=__author__,
     author_email='knucklessg1@gmail.com',
     license='Unlicense',
-    packages=['gitlab_api'],
+    packages=['confluence_calendar_api'],
     include_package_data=True,
     install_requires=['requests', 'urllib3'],
-    py_modules=['gitlab_api'],
-    package_data={'gitlab_api': ['gitlab_api']},
+    py_modules=['confluence_calendar_api'],
+    package_data={'confluence_calendar_api': ['confluence_calendar_api']},
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'License :: Public Domain',

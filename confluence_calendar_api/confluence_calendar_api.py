@@ -55,21 +55,22 @@ class Api(object):
             raise AuthError
         elif response.status_code == 404:
             raise ParameterError
-            
+
     @require_auth
     def get_calendars(self, sub_calendar_id=None, time_zone_id='US%2FPacific', start='2022-01-01T00%3A00%3A00Z',
                       end='2025-06-22T00%3A00%3A00Z'):
         if sub_calendar_id is None:
             raise MissingParameterError
-        response = self._session.get(f'{self.url}/calendar-services/1.0/calendar/events.json?subCalendarId={sub_calendar_id}'
-                              f'&userTimeZoneId={time_zone_id}'
-                              f'&start={start}'
-                              f'&end={end}', headers=self.headers, verify=self.verify, proxies=self.proxies)
+        response = self._session.get(f'{self.url}/calendar-services/1.0/calendar/events.json'
+                                     f'?subCalendarId={sub_calendar_id}'
+                                     f'&userTimeZoneId={time_zone_id}'
+                                     f'&start={start}'
+                                     f'&end={end}', headers=self.headers, verify=self.verify, proxies=self.proxies)
         try:
             return response.json()
         except ValueError or AttributeError:
             return response
-      
+
     @require_auth
     def add_calendar_event(self, data=None):
         if data is None:
