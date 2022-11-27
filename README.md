@@ -26,7 +26,7 @@ print(calendar)
 Install Python Package
 
 ```bash
-python -m pip install gitlab-api
+python -m pip install confluence-calendar-api
 ```
 
 #### Build Instructions
