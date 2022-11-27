@@ -1,4 +1,4 @@
-# GitLab API
+# Confluence Calendar API
 *Version: 0.1.0*
 
 Confluence Calendar API Python Wrapper
