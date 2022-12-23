@@ -1,5 +1,5 @@
 # Confluence Calendar API
-*Version: 0.2.0*
+*Version: 0.2.1*
 
 Confluence Calendar API Python Wrapper
 
